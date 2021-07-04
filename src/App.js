@@ -28,12 +28,14 @@ export default class App extends Component {
 		this.getSubBreeds = this.getSubBreeds.bind(this);
 		this.breedsList = this.breedsList.bind(this);
 		this.subBreedsList = this.subBreedsList.bind(this);
+		this.randomImageByBreed = this.randomImageByBreed.bind(this);
 		this.selectRandomImageByBreed = this.selectRandomImageByBreed.bind(this);
 		this.setImageBySubBreed = this.setImageBySubBreed.bind(this);
 	}
 
 	componentDidMount() {
 		this.getBreeds();
+		this.randomImageByBreed("hound");
 	}
 
 	async getBreeds() {
@@ -78,8 +80,7 @@ export default class App extends Component {
 			});
 	}
 
-	async selectRandomImageByBreed(e, breed) {
-		e.preventDefault();
+	async randomImageByBreed(breed) {
 		const url = `https://dog.ceo/api/breed/${breed}/images/random/`;
 		fetch(cors + url)
 			.then((res) => {
@@ -91,11 +92,15 @@ export default class App extends Component {
 			.then((res) => {
 				console.log("image:", res.message);
 				this.setState({
-					// loading: false,
 					image: res.message,
 					breed: breed,
 				});
 			});
+	}
+
+	selectRandomImageByBreed(e, breed) {
+		e.preventDefault();
+		this.randomImageByBreed(breed);
 		this.getSubBreeds(breed);
 	}
 
@@ -151,8 +156,8 @@ export default class App extends Component {
 		}
 		if (!this.state.loading) {
 			return (
-				<div className="container w-50 mt-2">
-					<blockquote className="quote">It's a dog eat, dog world.</blockquote>
+				<div className="container-flex w-100 mt-2">
+					<h1 className="title">Dog breed <span>{this.state.breed}</span></h1>
 					<div className="card">
 						<div className="card-header">
 							<div className="row">
@@ -200,7 +205,7 @@ export default class App extends Component {
 							<div className="row mt-2 ml-2">
 								{this.state.image !== undefined && (
 									<img
-										className="img rounded mr-2"
+										className="active mr-2"
 										src={this.state.image}
 										alt={this.state.breed}
 										title={this.state.breed}
@@ -208,7 +213,7 @@ export default class App extends Component {
 								)}
 								{this.state.image2 !== undefined && (
 									<img
-										className="img rounded"
+										className=""
 										src={this.state.image2}
 										alt="sub breed"
 									/>
