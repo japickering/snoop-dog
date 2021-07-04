@@ -1,4 +1,4 @@
-# From hood dawh to Dog CEO, International Canine baby!
+# From hood dawg to Dog CEO, International Canine baby!
 
 This interview challenge collects Dog CEO api data about a range of dogs and display them in a pooch friendly, modern style.
 
