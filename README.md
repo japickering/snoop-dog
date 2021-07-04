@@ -1,6 +1,6 @@
-# Snoop Dog - from hood Dog to Dog CEO, International Super Stardom baby!
+# From hood dawh to Dog CEO, International Canine baby!
 
-This project will collect Dog CEO api data about a range of dogs and display them in a pooch friendly modern UI style.
+This interview challenge collects Dog CEO api data about a range of dogs and display them in a pooch friendly, modern style.
 
 ## Available Scripts
 
