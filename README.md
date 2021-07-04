@@ -1,6 +1,5 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Snoop Dog (from hood Dog MC to Dog CEO - International Super Stardom baby!
+This project collects Dog CEO api data about a range of big dogs.. and some too!
 
 ## Available Scripts
 
