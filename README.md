@@ -1,5 +1,6 @@
-# Snoop Dog (from hood Dog MC to Dog CEO - International Super Stardom baby!
-This project collects Dog CEO api data about a range of big dogs.. and some small one's too!
+# Snoop Dog - from hood Dog to Dog CEO, International Super Stardom baby!
+
+This project will collect Dog CEO api data about a range of dogs and display them in a pooch friendly modern UI style.
 
 ## Available Scripts
 
