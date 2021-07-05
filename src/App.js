@@ -125,7 +125,8 @@ export default class App extends Component {
   }
 
   async getSubBreedImages(sub) {
-    fetch(`https://dog.ceo/api/${this.state.breed}/${sub}/images`)
+    fetch(`https://dog.ceo/api/breed/${this.state.breed}/${sub}/images`)
+    // fetch(`https://dog.ceo/api/breed/hound/afghan/images`)
       .then((res) => {
         return res.json();
       })
@@ -145,7 +146,7 @@ export default class App extends Component {
       return (
         <li key={breed}>
           <button
-            class="dropdown-item"
+            className="dropdown-item"
             type="button"
             onClick={() => this.selectByBreed(breed)}
           >
@@ -161,7 +162,7 @@ export default class App extends Component {
       return (
         <li key={sub}>
           <button
-            class="dropdown-item"
+            className="dropdown-item"
             type="button"
             onClick={() => this.getSubBreedImages(sub)}
           >
@@ -177,7 +178,7 @@ export default class App extends Component {
       return (
         <li key={num}>
           <button
-            class="dropdown-item"
+            className="dropdown-item"
             type="button"
             onClick={() => this.selectNumberImages(num)}
           >
@@ -189,13 +190,16 @@ export default class App extends Component {
   }
 
   imageList() {
-    return this.state.images.map((image) => {
-      return (
-        <li key={image} className="img-list mb-3 mr-3">
-          <img className="box-shadow" src={image} alt="" />
-        </li>
-      );
-    });
+		return this.state.images.map((image, i) => {
+			if(i > this.state.number) {
+				return;
+			}
+			return (
+				<li key={image} className="img-list mb-3 mr-3">
+					<img className="box-shadow" src={image} alt="" />
+				</li>
+			);
+		});
   }
 
   selectByBreed(breed) {
