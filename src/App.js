@@ -23,7 +23,7 @@ export default class App extends Component {
       spinnerColor: "rgb(54, 215, 183)",
       breed: "dingo",
       subBreeds: [],
-      number: 3,
+      max: 3,
       numbers: [1, 2, 3, 4, 5, 6, 7, 8],
       loading: true
     };
@@ -44,7 +44,7 @@ export default class App extends Component {
   componentDidMount() {
     this.getBreeds();
     this.getSubBreeds(this.state.breed);
-    this.getImagesByBreed(this.state.breed, this.state.numberImages);
+    this.getImagesByBreed(this.state.breed, this.state.max);
   }
 
   async getBreeds() {
@@ -190,25 +190,27 @@ export default class App extends Component {
   }
 
   imageList() {
-		return this.state.images.map((image, i) => {
-			if(i > this.state.number) {
-				return;
-			}
-			return (
-				<li key={image} className="img-list mb-3 mr-3">
-					<img className="box-shadow" src={image} alt="" />
+		const imgs = this.state.images;
+		const arr = [];
+
+		// limit output by max images
+		for (let i = 0; i < this.state.max; i++) {
+			arr.push(
+				<li key={imgs[i]} className="img-list mb-3 mr-3">
+					<img className="box-shadow" src={imgs[i]} alt="" />
 				</li>
-			);
-		});
+			)
+		}
+		return arr;
   }
 
   selectByBreed(breed) {
-    this.getImagesByBreed(breed, this.state.number);
+    this.getImagesByBreed(breed, this.state.max);
     this.getSubBreeds(breed);
   }
 
   selectNumberImages(num) {
-    this.setState({ number: num });
+    this.setState({ max: num });
     this.getImagesByBreed(this.state.breed, num);
   }
 
