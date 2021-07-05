@@ -1,6 +1,8 @@
 # From hood dawg to Dog CEO, International Canine baby!
 
-This interview challenge uses the Dog CEO api data about a range of dogs and display them in a pooch friendly, modern style.
+This interview challenge uses the Dog CEO api to fetch photos of all breeds and display them in a pooch friendly, modern style.
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d16ac694-257c-4d42-8b9d-34b43d5ae516/deploy-status)](https://app.netlify.com/sites/snoopdog/deploys)
 
 ## Available Scripts
 
