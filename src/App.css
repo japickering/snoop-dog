@@ -14,14 +14,14 @@ body {
 }
 
 img {
+	border: 0px solid transparent;
   width: 100%;
   height: auto;
-  max-width: 350px;
-  max-height: 350px;
 }
 
 img.box-shadow {
-  border: 0px solid transparent;
+	max-width: 300px;
+	max-height: 300px;
   box-shadow: 3px 3px 10px rgba(50, 50, 50, 0.5);
 }
 
@@ -41,6 +41,10 @@ blockquote:after {
   content: "'";
 }
 
+ul li.img-list {
+	display: inline-block;
+}
+
 .circle {
   border-radius: 50%;
 }
@@ -58,6 +62,11 @@ blockquote:after {
 
 .dropdown-menu {
   height: 250px;
+  overflow-y: auto;
+}
+
+.dropdown-menu.numbers {
+  height: auto;
   overflow-y: auto;
 }
 

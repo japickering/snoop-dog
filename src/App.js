@@ -4,9 +4,9 @@ import { css } from "@emotion/react";
 // import { BounceLoader, BeatLoader, CircleLoader, ClipLoader } from "react-spinners";
 import { ClipLoader } from "react-spinners";
 
+// styles
 import "bootstrap";
 import "./styles/bootstrap.min.css";
-// import "./styles/bootstrap_limitless.min.css";
 import "./App.css";
 
 // react-spinners custom css
@@ -21,21 +21,30 @@ export default class App extends Component {
     super(props);
     this.state = {
       spinnerColor: "rgb(54, 215, 183)",
+      breed: "dingo",
+      subBreeds: [],
+      number: 3,
+      numbers: [1, 2, 3, 4, 5, 6, 7, 8],
       loading: true
     };
 
     this.getBreeds = this.getBreeds.bind(this);
     this.getSubBreeds = this.getSubBreeds.bind(this);
+    this.getImagesByBreed = this.getImagesByBreed.bind(this);
+    this.getSubBreedImages = this.getSubBreedImages.bind(this);
+    this.randomImageByBreed = this.randomImageByBreed.bind(this);
+    this.selectByBreed = this.selectByBreed.bind(this);
     this.breedsList = this.breedsList.bind(this);
     this.subBreedsList = this.subBreedsList.bind(this);
-    this.randomImageByBreed = this.randomImageByBreed.bind(this);
-    this.selectRandomImageByBreed = this.selectRandomImageByBreed.bind(this);
-    this.setImageBySubBreed = this.setImageBySubBreed.bind(this);
+    this.imageList = this.imageList.bind(this);
+    this.numberList = this.numberList.bind(this);
+    this.selectNumberImages = this.selectNumberImages.bind(this);
   }
 
   componentDidMount() {
     this.getBreeds();
-    this.randomImageByBreed("hound");
+    this.getSubBreeds(this.state.breed);
+    this.getImagesByBreed(this.state.breed, this.state.numberImages);
   }
 
   async getBreeds() {
@@ -64,7 +73,7 @@ export default class App extends Component {
   }
 
   async getSubBreeds(breed) {
-    fetch(`https://dog.ceo/api/breed/${breed}/images`)
+    fetch(`https://dog.ceo/api/breed/${breed}/list`)
       .then((res) => {
         return res.json();
       })
@@ -74,15 +83,15 @@ export default class App extends Component {
       .then((res) => {
         console.log("Sub breeds:", res.message);
         this.setState({
-          loading: false,
           subBreeds: res.message
         });
       });
   }
 
+  // random image fetch api requires cors proxy
   async randomImageByBreed(breed) {
     const url = `https://dog.ceo/api/breed/${breed}/images/random/`;
-    fetch(cors + url)
+    fetch(cors, url)
       .then((res) => {
         return res.json();
       })
@@ -90,7 +99,7 @@ export default class App extends Component {
         console.error(error.status);
       })
       .then((res) => {
-        console.log("image:", res.message);
+        console.log("res:", res);
         this.setState({
           image: res.message,
           breed: breed
@@ -98,49 +107,105 @@ export default class App extends Component {
       });
   }
 
-  selectRandomImageByBreed(e, breed) {
-    e.preventDefault();
-    this.randomImageByBreed(breed);
-    this.getSubBreeds(breed);
+  async getImagesByBreed(breed, n) {
+    fetch(`https://dog.ceo/api/breed/${breed}/images/random/${n}`)
+      .then((res) => {
+        return res.json();
+      })
+      .catch((error) => {
+        console.error(error.status);
+      })
+      .then((res) => {
+        console.log("Breed images:", res.message);
+        this.setState({
+          images: res.message,
+          breed: breed
+        });
+      });
+  }
+
+  async getSubBreedImages(sub) {
+    fetch(`https://dog.ceo/api/${this.state.breed}/${sub}/images`)
+      .then((res) => {
+        return res.json();
+      })
+      .catch((error) => {
+        console.error(error.status);
+      })
+      .then((res) => {
+        console.log("Sub breed images:", res.message);
+        this.setState({
+          images: res.message
+        });
+      });
   }
 
   breedsList() {
-    const list = this.state.breeds.map((breed) => {
+    return this.state.breeds.map((breed) => {
       return (
         <li key={breed}>
-          <a
-            href="./"
-            className="dropdown-item"
-            onClick={(e) => this.selectRandomImageByBreed(e, breed)}
+          <button
+            class="dropdown-item"
+            type="button"
+            onClick={() => this.selectByBreed(breed)}
           >
             {breed}
-          </a>
+          </button>
         </li>
       );
     });
-    return list;
   }
 
   subBreedsList() {
-    const list = this.state.subBreeds.map((img, i) => {
+    return this.state.subBreeds.map((sub) => {
       return (
-        <li key={img}>
-          <a
-            href="./"
-            className="dropdown-item"
-            onClick={(e) => this.setImageBySubBreed(e, img)}
+        <li key={sub}>
+          <button
+            class="dropdown-item"
+            type="button"
+            onClick={() => this.getSubBreedImages(sub)}
           >
-            {this.state.breed + " " + i}
-          </a>
+            {sub}
+          </button>
         </li>
       );
     });
-    return list;
   }
 
-  setImageBySubBreed(event, img) {
-    event.preventDefault();
-    this.setState({ image2: img });
+  numberList() {
+    return this.state.numbers.map((num) => {
+      return (
+        <li key={num}>
+          <button
+            class="dropdown-item"
+            type="button"
+            onClick={() => this.selectNumberImages(num)}
+          >
+            {num}
+          </button>
+        </li>
+      );
+    });
+  }
+
+  imageList() {
+    return this.state.images.map((image) => {
+      return (
+        <li key={image} className="img-list mb-3 mr-3">
+          <img className="box-shadow" src={image} alt="" />
+        </li>
+      );
+    });
+  }
+
+  selectByBreed(breed) {
+    this.getImagesByBreed(breed, this.state.number);
+    this.getSubBreeds(breed);
+  }
+
+  selectNumberImages(num) {
+    this.setState({ number: num });
+    this.getImagesByBreed(this.state.breed, num);
   }
 
   render() {
@@ -158,14 +223,14 @@ export default class App extends Component {
       return (
         <div className="container-flex w-100 mt-2">
           <h1 id="title" className="title">
-            dog breed <span>{this.state.breed}</span>
+            dog breed : <span>{this.state.breed}</span>
           </h1>
 
           <div className="card">
             <div className="card-header">
               <div className="row">
-                <div className="col">
-                  <div className="dropdown breeds">
+                <div className="mb-2 col col-xl-2">
+                  <div className="dropdown">
                     <button
                       id="breedSelect"
                       className="btn btn-success"
@@ -173,17 +238,17 @@ export default class App extends Component {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Select dog breed..
+                      Select Dog breed..
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="breedSelect">
                       {this.breedsList()}
                     </ul>
                   </div>
                 </div>
-                <div className="mb-2 col">
+                <div className="mb-2 col col-xl-2">
                   {this.state.breed !== undefined &&
-                    this.state.subBreeds !== undefined && (
-                      <div className="dropdown sub-breeds">
+                    this.state.subBreeds.length > 0 && (
+                      <div className="dropdown">
                         <button
                           id="subBreedSelect"
                           className="btn btn-secondary"
@@ -202,25 +267,30 @@ export default class App extends Component {
                       </div>
                     )}
                 </div>
+                <div className="mb-2 col col-xl-2">
+                  <div className="dropdown">
+                    <button
+                      id="numberSelect"
+                      className="btn btn-default"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Select number of images..
+                    </button>
+                    <ul
+                      className="dropdown-menu numbers"
+                      aria-labelledby="numberSelect"
+                    >
+                      {this.numberList()}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="card-body">
               <div className="row m-1">
-                {this.state.image !== undefined && (
-                  <img
-                    className="box-shadow mb-3 mr-2"
-                    src={this.state.image}
-                    alt={this.state.breed}
-                    title={this.state.breed}
-                  />
-                )}
-                {this.state.image2 !== undefined && (
-                  <img
-                    className="box-shadow mb-3 mr-2"
-                    src={this.state.image2}
-                    alt="sub breed"
-                  />
-                )}
+                {this.state.images !== undefined && <ul>{this.imageList()}</ul>}
               </div>
             </div>
           </div>
