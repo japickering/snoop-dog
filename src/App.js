@@ -307,7 +307,7 @@ export default class App extends Component {
             </div>
           </div>
 					<div className="sticky-nav">
-						<a href="#" className="top">Back to top</a>
+						<a href="#title" className="top">Back to top</a>
 					</div>
         </div>
       );
