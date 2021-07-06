@@ -22,16 +22,19 @@ export default class App extends Component {
     this.state = {
       spinnerColor: "rgb(54, 215, 183)",
       breed: "dingo",
+			selection: "Select Dog breed..",
+			selectionSub: "",
       subBreeds: [],
       max: 3,
-      numbers: [1, 2, 3, 4, 5, 6, 7, 8],
+      selectedNumber: 3,
+      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       loading: true
     };
 
     this.getBreeds = this.getBreeds.bind(this);
     this.getSubBreeds = this.getSubBreeds.bind(this);
     this.getImagesByBreed = this.getImagesByBreed.bind(this);
-    this.getSubBreedImages = this.getSubBreedImages.bind(this);
+    this.getImagesBySubBreed = this.getImagesBySubBreed.bind(this);
     this.randomImageByBreed = this.randomImageByBreed.bind(this);
     this.selectByBreed = this.selectByBreed.bind(this);
     this.breedsList = this.breedsList.bind(this);
@@ -83,7 +86,8 @@ export default class App extends Component {
       .then((res) => {
         console.log("Sub breeds:", res.message);
         this.setState({
-          subBreeds: res.message
+          subBreeds: res.message,
+					selectionSub: ""
         });
       });
   }
@@ -119,12 +123,13 @@ export default class App extends Component {
         console.log("Breed images:", res.message);
         this.setState({
           images: res.message,
-          breed: breed
+          breed: breed,
+          selection: breed
         });
       });
   }
 
-  async getSubBreedImages(sub) {
+  async getImagesBySubBreed(sub) {
     fetch(`https://dog.ceo/api/breed/${this.state.breed}/${sub}/images`)
     // fetch(`https://dog.ceo/api/breed/hound/afghan/images`)
       .then((res) => {
@@ -136,7 +141,8 @@ export default class App extends Component {
       .then((res) => {
         console.log("Sub breed images:", res.message);
         this.setState({
-          images: res.message
+          images: res.message,
+					selectionSub: sub
         });
       });
   }
@@ -164,7 +170,7 @@ export default class App extends Component {
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => this.getSubBreedImages(sub)}
+            onClick={() => this.getImagesBySubBreed(sub)}
           >
             {sub}
           </button>
@@ -210,7 +216,7 @@ export default class App extends Component {
   }
 
   selectNumberImages(num) {
-    this.setState({ max: num });
+    this.setState({ max: num, selectedNumber: num });
     this.getImagesByBreed(this.state.breed, num);
   }
 
@@ -228,8 +234,8 @@ export default class App extends Component {
     if (!this.state.loading) {
       return (
         <div className="container-flex w-100 mt-2">
-          <h1 id="title" className="title">
-            dog breed : <span>{this.state.breed}</span>
+          <h1 id="title" className="title ml-2">
+            dog breed: <span>{this.state.breed}</span>&nbsp;<span>{this.state.selectionSub}</span>
           </h1>
 
           <div className="card">
@@ -239,12 +245,12 @@ export default class App extends Component {
                   <div className="dropdown">
                     <button
                       id="breedSelect"
-                      className="btn btn-success"
+                      className="btn btn-primary"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Select Dog breed..
+                      Selected breed: {this.state.selection}
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="breedSelect">
                       {this.breedsList()}
@@ -257,7 +263,7 @@ export default class App extends Component {
                       <div className="dropdown">
                         <button
                           id="subBreedSelect"
-                          className="btn btn-secondary"
+                          className="btn btn-info"
                           type="button"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
@@ -277,12 +283,12 @@ export default class App extends Component {
                   <div className="dropdown">
                     <button
                       id="numberSelect"
-                      className="btn btn-default"
+                      className="btn btn-success"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Select number of images..
+                      Number of images: {this.state.selectedNumber}
                     </button>
                     <ul
                       className="dropdown-menu numbers"
@@ -300,6 +306,9 @@ export default class App extends Component {
               </div>
             </div>
           </div>
+					<div className="sticky-nav">
+						<a href="#" className="top">Back to top</a>
+					</div>
         </div>
       );
     }

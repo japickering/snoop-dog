@@ -25,6 +25,24 @@ img.box-shadow {
   box-shadow: 3px 3px 10px rgba(50, 50, 50, 0.5);
 }
 
+@media screen and (max-width: 900px) {
+	img.box-shadow {
+		max-width: 300px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	img.box-shadow {
+		max-width: 280px;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	img.box-shadow {
+		max-width: 300px;
+	}
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -45,6 +63,25 @@ ul li.img-list {
 	display: inline-block;
 }
 
+
+.sticky-nav {
+	display: block;
+	position: fixed;
+	padding: 8px;
+	bottom: 10px;
+	right: 10px;
+	width: 120px;
+	height: 40px;
+	z-index: 9;
+	background-color: #fff;
+	border: 1px solid #eee;
+	text-align: center;
+}
+
+.sticky-nav a {
+	color: rgb(17, 79, 107);
+}
+
 .circle {
   border-radius: 50%;
 }
@@ -56,8 +93,26 @@ ul li.img-list {
 }
 
 .title span {
-  color: #666;
+  color: #333;
   font-weight: bold;
+}
+
+.dropdown .btn-primary,
+.dropdown .btn-secondary,
+.dropdown .btn-main,
+.dropdown .btn-success {
+	width: 200px;
+	color: #fff;
+	font-weight: normal;
+}
+
+.dropdown .btn-success {
+	width: 180px;
+}
+
+.dropdown .btn-primary,
+.dropdown .btn-success {
+	text-transform: capitalize;
 }
 
 .dropdown-menu {
