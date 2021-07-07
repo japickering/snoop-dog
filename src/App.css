@@ -63,19 +63,20 @@ ul li.img-list {
 	display: inline-block;
 }
 
-
-.sticky-nav {
+.footer-nav {
 	display: block;
-	position: fixed;
+	width: 120px;
 	padding: 8px;
 	bottom: 10px;
 	right: 10px;
-	width: 120px;
-	height: 40px;
-	z-index: 9;
 	background-color: #fff;
 	border: 1px solid #eee;
 	text-align: center;
+}
+
+.sticky-nav {
+	position: fixed;
+	z-index: 9;
 }
 
 .sticky-nav a {
