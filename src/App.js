@@ -31,8 +31,8 @@ export default class App extends Component {
       selection: "Select Dog breed..",
       selectionSub: "",
       subBreeds: [],
-      max: 3,
-      selectedNumber: 3,
+      max: 4,
+      selectedNumber: 4,
       numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       loading: true
     };
