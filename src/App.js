@@ -1,11 +1,5 @@
-import React, { Component } from "react";
-import {
-  getBreeds,
-  getSubBreeds,
-  getImagesByBreed,
-  getImagesBySubBreed
-  // randomImageByBreed,
-} from "./api/api";
+import React, { useState, useEffect } from "react";
+// import { cors } from "./config";
 import { css } from "@emotion/react";
 // import { BounceLoader, BeatLoader, CircleLoader, ClipLoader } from "react-spinners";
 import { ClipLoader } from "react-spinners";
@@ -22,217 +16,288 @@ const override = css`
   border-color: red;
 `;
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      spinnerColor: "rgb(54, 215, 183)",
-      breed: "hound",
-      selection: "Select Dog breed..",
-      selectionSub: "",
-      subBreeds: [],
-      max: 4,
-      selectedNumber: 4,
-      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      loading: true
-    };
+export default function App() {
+	const [loading, setLoading] = useState(true);
+	const [spinnerColor, setSpinnerColor] = useState("rgb(54, 215, 183)");
+	const [breed, setBreed] = useState("hound");
+	const [breeds, setBreeds] = useState([]);
+	const [subBreeds, setSubBreeds] = useState([]);
+	// const [image, setImage] = useState("");
+	const [images, setImages] = useState([]);
+	const [selection, setSelection] = useState("Select Dog breed..");
+	const [selectionSub, setSelectionSub] = useState("");
+	const [max, setMax] = useState(4);
+	const [numbers, setNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+	const [scrollDown, setScrollDown] = useState(false);
+	const [selectedNumber, setSelectedNumber] = useState(4);
 
-    // this.getBreeds = this.getBreeds.bind(this);
-    // this.getSubBreeds = this.getSubBreeds.bind(this);
-    // this.getImagesByBreed = this.getImagesByBreed.bind(this);
-    // this.getImagesBySubBreed = this.getImagesBySubBreed.bind(this);
-    // this.randomImageByBreed = this.randomImageByBreed.bind(this);
-    this.selectByBreed = this.selectByBreed.bind(this);
-    this.breedsList = this.breedsList.bind(this);
-    this.subBreedsList = this.subBreedsList.bind(this);
-    this.imageList = this.imageList.bind(this);
-    this.numberList = this.numberList.bind(this);
-    this.selectNumberImages = this.selectNumberImages.bind(this);
+	// APIs
+	const getBreeds = () => {
+		fetch("https://dog.ceo/api/breeds/list/all")
+			.then((res) => {
+				return res.json();
+			})
+			.catch((error) => {
+				console.error(error.status);
+			})
+			.then((res) => {
+				// console.log("breeds:", res.message);
+				const arr = [];
+				const ob = res.message;
+
+				for (const key in ob) {
+					if (ob.hasOwnProperty(key)) {
+						arr.push(key);
+					}
+				}
+				setLoading(false);
+				setBreeds(arr);
+			});
+	}
+
+	const getSubBreeds = (breed) => {
+		fetch(`https://dog.ceo/api/breed/${breed}/list`)
+			.then((res) => {
+				return res.json();
+			})
+			.catch((error) => {
+				console.error(error.status);
+			})
+			.then((res) => {
+				// console.log("Sub breeds:", res.message);
+				setSubBreeds(res.message);
+				setSelectionSub("");
+			});
+	}
+
+	// random image api requires cors proxy
+	/* const randomImageByBreed = (breed) => {
+		const url = `https://dog.ceo/api/breed/${breed}/images/random/`;
+		fetch(cors, url)
+			.then((res) => {
+				return res.json();
+			})
+			.catch((error) => {
+				console.error(error.status);
+			})
+			.then((res) => {
+				// console.log("res:", res);
+				setImage(res.image);
+				setBreed(breed);
+			});
+	} */
+
+	const getImagesByBreed = (breed, n) => {
+		fetch(`https://dog.ceo/api/breed/${breed}/images/random/${n}`)
+			.then((res) => {
+				return res.json();
+			})
+			.catch((error) => {
+				console.error(error.status);
+			})
+			.then((res) => {
+				// console.log("Breed images:", res.message);
+				setImages(res.message);
+				setBreed(breed);
+				setSelection(breed);
+			});
+	}
+
+	const getImagesBySubBreed = (breed, sub) => {
+		fetch(`https://dog.ceo/api/breed/${breed}/${sub}/images`)
+		// fetch(`https://dog.ceo/api/breed/hound/afghan/images`)
+			.then((res) => {
+				return res.json();
+			})
+			.catch((error) => {
+				console.error(error.status);
+			})
+			.then((res) => {
+				// console.log("Sub breed images:", res.message);
+				setImages(res.message);
+				setSelectionSub(sub);
+			});
+	}
+
+	// useEffect with loading flag
+	useEffect(() => {
+		window.addEventListener("scroll", () => {
+			const min = 20;
+			setScrollDown(window.scrollY > min ? true : false );
+		});
+		// load defaults
+		getBreeds();
+		getSubBreeds(breed);
+		getImagesByBreed(breed, max);
+	}, [loading]);
+
+	const selectByBreed = (breed) => {
+    getImagesByBreed(breed, max);
+    getSubBreeds(breed);
   }
 
-  componentDidMount() {
-    window.addEventListener("scroll", () => {
-      const min = 20;
-      this.setState({ scrollDown: window.scrollY > min ? true : false });
-    });
-    getBreeds(this);
-    getSubBreeds(this, this.state.breed);
-    getImagesByBreed(this, this.state.breed, this.state.max);
+  const selectNumberImages = (num) => {
+		setMax(num);
+		setSelectedNumber(num);
+    getImagesByBreed(breed, num);
   }
 
-  selectByBreed(breed) {
-    getImagesByBreed(this, breed, this.state.max);
-    getSubBreeds(this, breed);
-  }
-
-  selectNumberImages(num) {
-    this.setState({ max: num, selectedNumber: num });
-    getImagesByBreed(this, this.state.breed, num);
-  }
-
-  breedsList() {
-    return this.state.breeds.map((breed) => {
+  const breedsList = () => {
+    return breeds.map((breed) => {
       return (
         <li key={breed}>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => this.selectByBreed(breed)}
+            onClick={() => selectByBreed(breed)}
           >
             {breed}
           </button>
         </li>
-      );
-    });
+      )
+    })
   }
 
-  subBreedsList() {
-    const self = this;
-    return this.state.subBreeds.map((sub) => {
+  const subBreedsList = (breed) => {
+    return subBreeds.map((sub) => {
       return (
-        <li key={sub}>
-          <button
-            className="dropdown-item"
-            type="button"
-            onClick={() => getImagesBySubBreed(self, sub)}
-          >
-            {sub}
-          </button>
-        </li>
-      );
-    });
+				<li key={sub}>
+					<button
+						className="dropdown-item"
+						type="button"
+						onClick={() => getImagesBySubBreed(breed, sub)}
+					>
+						{sub}
+					</button>
+				</li>
+      )
+    })
   }
 
-  numberList() {
-    return this.state.numbers.map((num) => {
+  const numberList = () => {
+    return numbers.map((num) => {
       return (
         <li key={num}>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => this.selectNumberImages(num)}
+            onClick={() => selectNumberImages(num)}
           >
             {num}
           </button>
         </li>
-      );
-    });
+      )
+    })
   }
 
-  imageList() {
-    const imgs = this.state.images;
+  const imageList = () => {
     const arr = [];
     // limit output by max images
-    for (let i = 0; i < this.state.max; i++) {
-      const label =
-        this.state.subBreeds.length > 0
-          ? this.state.breed + " " + this.state.subBreeds[i]
-          : this.state.breed + i;
+    for (let i = 0; i < max; i++) {
+      const label = subBreeds.length > 0 ? breed + " " + subBreeds[i] : breed + i;
       arr.push(
-        <li key={imgs[i]} className="img-list mb-3 mr-3">
-          <img className="box-shadow" src={imgs[i]} alt={label} />
+        <li key={images[i]} className="img-list mb-3 mr-3">
+          <img className="box-shadow" src={images[i]} alt={label} />
         </li>
       );
     }
     return arr;
   }
 
-  render() {
-    if (this.state.loading) {
-      return (
-        <ClipLoader
-          loading={this.state.loading}
-          size={60}
-          color={this.state.spinnerColor}
-          css={override}
-        />
-      );
-    }
-    if (!this.state.loading) {
-      return (
-        <div className="container-flex w-100 mt-2">
-          <h1 id="top" className="title ml-2">
-            dog breed: <span>{this.state.breed}</span>&nbsp;
-            <span>{this.state.selectionSub}</span>
-          </h1>
+	if (loading) {
+		return (
+			<ClipLoader
+				loading={loading}
+				size={60}
+				color={spinnerColor}
+				css={override}
+			/>
+		);
+	}
+	if (!loading) {
+		return (
+			<div className="container-flex w-100 mt-2">
+				<h1 id="top" className="title ml-2">
+					dog breed: <span>{breed}</span>&nbsp;
+					<span>{selectionSub}</span>
+				</h1>
 
-          <div className="card">
-            <div className="card-header">
-              <div className="row">
-                <div className="mb-2 col col-xl-2">
-                  <div className="dropdown">
-                    <button
-                      id="breedSelect"
-                      className="btn btn-primary"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Selected breed: {this.state.selection}
-                    </button>
-                    <ul className="dropdown-menu" aria-labelledby="breedSelect">
-                      {this.breedsList()}
-                    </ul>
-                  </div>
-                </div>
-                <div className="mb-2 col col-xl-2">
-                  {this.state.breed !== undefined &&
-                    this.state.subBreeds.length > 0 && (
-                      <div className="dropdown">
-                        <button
-                          id="subBreedSelect"
-                          className="btn btn-info"
-                          type="button"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          Select Sub breed..
-                        </button>
-                        <ul
-                          className="dropdown-menu"
-                          aria-labelledby="subBreedSelect"
-                        >
-                          {this.subBreedsList(this.state.breed)}
-                        </ul>
-                      </div>
-                    )}
-                </div>
-                <div className="mb-2 col col-xl-2">
-                  <div className="dropdown">
-                    <button
-                      id="numberSelect"
-                      className="btn btn-success"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Number of images: {this.state.selectedNumber}
-                    </button>
-                    <ul
-                      className="dropdown-menu numbers"
-                      aria-labelledby="numberSelect"
-                    >
-                      {this.numberList()}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="row m-1">
-                {this.state.images !== undefined && <ul>{this.imageList()}</ul>}
-              </div>
-            </div>
-          </div>
-          {this.state.scrollDown && (
-            <div className="footer-nav sticky-nav">
-              <a href="#top" className="top">
-                <i className="fa fa-arrow-up"></i>Back to top
-              </a>
-            </div>
-          )}
-        </div>
-      );
-    }
-  }
+				<div className="card">
+					<div className="card-header">
+						<div className="row">
+							<div className="mb-2 col col-xl-2">
+								<div className="dropdown">
+									<button
+										id="breedSelect"
+										className="btn btn-primary"
+										type="button"
+										data-bs-toggle="dropdown"
+										aria-expanded="false"
+									>
+										Breed: {selection}
+									</button>
+									<ul className="dropdown-menu" aria-labelledby="breedSelect">
+										{breedsList()}
+									</ul>
+								</div>
+							</div>
+							<div className="mb-2 col col-xl-2">
+								{breed !== undefined &&
+									subBreeds.length > 0 && (
+										<div className="dropdown">
+											<button
+												id="subBreedSelect"
+												className="btn btn-info"
+												type="button"
+												data-bs-toggle="dropdown"
+												aria-expanded="false"
+											>
+												Select Sub breed..
+											</button>
+											<ul
+												className="dropdown-menu"
+												aria-labelledby="subBreedSelect"
+											>
+												{subBreedsList(breed)}
+											</ul>
+										</div>
+									)}
+							</div>
+							<div className="mb-2 col col-xl-2">
+								<div className="dropdown">
+									<button
+										id="numberSelect"
+										className="btn btn-success"
+										type="button"
+										data-bs-toggle="dropdown"
+										aria-expanded="false"
+									>
+										Number of images: {selectedNumber}
+									</button>
+									<ul
+										className="dropdown-menu numbers"
+										aria-labelledby="numberSelect"
+									>
+										{numberList()}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="card-body">
+						<div className="row m-1">
+							{images !== undefined && <ul>{imageList()}</ul>}
+						</div>
+					</div>
+				</div>
+				{scrollDown && (
+					<div className="footer-nav sticky-nav">
+						<a href="#top" className="top">
+							<i className="fa fa-arrow-up"></i>Back to top
+						</a>
+					</div>
+				)}
+			</div>
+		);
+	}
 }
