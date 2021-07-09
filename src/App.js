@@ -16,9 +16,11 @@ const override = css`
   border-color: red;
 `;
 
+// images count
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 export default function App() {
 	const [loading, setLoading] = useState(true);
-	const [spinnerColor, setSpinnerColor] = useState("rgb(54, 215, 183)");
 	const [breed, setBreed] = useState("hound");
 	const [breeds, setBreeds] = useState([]);
 	const [subBreeds, setSubBreeds] = useState([]);
@@ -27,7 +29,6 @@ export default function App() {
 	const [selection, setSelection] = useState("Select Dog breed..");
 	const [selectionSub, setSelectionSub] = useState("");
 	const [max, setMax] = useState(4);
-	const [numbers, setNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 	const [scrollDown, setScrollDown] = useState(false);
 	const [selectedNumber, setSelectedNumber] = useState(4);
 
@@ -209,7 +210,7 @@ export default function App() {
 			<ClipLoader
 				loading={loading}
 				size={60}
-				color={spinnerColor}
+				color="rgb(54, 215, 183)"
 				css={override}
 			/>
 		);
