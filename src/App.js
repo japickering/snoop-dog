@@ -129,7 +129,7 @@ export default function App() {
 		getBreeds();
 		getSubBreeds(breed);
 		getImagesByBreed(breed, max);
-	}, [loading]);
+	}, [loading, breed, max]);
 
 	const selectByBreed = (breed) => {
     getImagesByBreed(breed, max);
