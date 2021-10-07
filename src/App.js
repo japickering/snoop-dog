@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 
+// components
+import BreedSelect from "./components/BreedSelect";
+import SubBreedSelect from "./components/SubBreedSelect";
+import NumberSelect from "./components/NumberSelect";
+
 // styles
 import "bootstrap";
 import "./styles/bootstrap.min.css";
@@ -32,9 +37,6 @@ export default function App() {
       .then((res) => {
         return res.json();
       })
-      .catch((error) => {
-        console.error(error.status);
-      })
       .then((res) => {
         // console.log("breeds:", res.message);
         const arr = [];
@@ -47,6 +49,9 @@ export default function App() {
         }
         setLoading(false);
         setBreeds(arr);
+      })
+      .catch((err) => {
+        console.log(err.status);
       });
   };
 
@@ -55,13 +60,13 @@ export default function App() {
       .then((res) => {
         return res.json();
       })
-      .catch((error) => {
-        console.error(error.status);
-      })
       .then((res) => {
         // console.log("Sub breeds:", res.message);
         setSubBreeds(res.message);
         setSelectionSub("");
+      })
+      .catch((err) => {
+        console.log(err.status);
       });
   };
 
@@ -70,14 +75,14 @@ export default function App() {
       .then((res) => {
         return res.json();
       })
-      .catch((error) => {
-        console.error(error.status);
-      })
       .then((res) => {
         // console.log("Breed images:", res.message);
         setImages(res.message);
         setBreed(breed);
         setSelection(breed);
+      })
+      .catch((err) => {
+        console.log(err.status);
       });
   };
 
@@ -204,60 +209,18 @@ export default function App() {
           <div className="card-header">
             <div className="row">
               <div className="mb-2 col col-xl-2">
-                <div className="dropdown">
-                  <button
-                    id="breedSelect"
-                    className="btn btn-primary"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Breed: {selection}
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="breedSelect">
-                    {breedsList()}
-                  </ul>
-                </div>
+                <BreedSelect selection={selection} breedsList={breedsList} />
               </div>
               <div className="mb-2 col col-xl-2">
                 {breed !== undefined && subBreeds.length > 0 && (
-                  <div className="dropdown">
-                    <button
-                      id="subBreedSelect"
-                      className="btn btn-info"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Select Sub breed..
-                    </button>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="subBreedSelect"
-                    >
-                      {subBreedsList(breed)}
-                    </ul>
-                  </div>
+                  <SubBreedSelect breed={breed} subBreedsList={subBreedsList} />
                 )}
               </div>
               <div className="mb-2 col col-xl-2">
-                <div className="dropdown">
-                  <button
-                    id="numberSelect"
-                    className="btn btn-success"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Number of images: {selectedNumber}
-                  </button>
-                  <ul
-                    className="dropdown-menu numbers"
-                    aria-labelledby="numberSelect"
-                  >
-                    {numberList()}
-                  </ul>
-                </div>
+                <NumberSelect
+                  selectedNumber={selectedNumber}
+                  numberList={numberList}
+                />
               </div>
             </div>
           </div>
